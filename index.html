@@ -112,163 +112,92 @@
         __name__ = "__main__";
         type = pytype;
         scene = canvas();
-        "4";
         scene.width = 1520;
-        "5";
         scene.height = 600;
-        "6";
         RS_interpolate_kwargs.call(this, print_options, [RS_desugar_kwargs({width: 1520, height: 350})]);
         (await sleep(.1));
-        "8";
         dist = _dt;
         (await sleep(.1));
-        "9";
         hei = _ht;
         (await sleep(.1));
-        "10";
         usermass = _wt;
-        "12";
         while (true) {
-            "13";
             try {
-                "14";
                 distance = float(dist);
-                "15";
                 height = float(hei);
-                "16";
                 umass = float(usermass);
-                "17";
                 break;
-                "18";
             } catch (RS_Exception) {
                 RS_last_exception = RS_Exception;
                 if (RS_Exception instanceof ValueError) {
-                    "19";
                     print("Entrées invalides, réesssayez encore une fois");
                 } else {
                     throw RS_Exception;
                 }
             }
         }
-        "22";
         g = 9.8["-u"]();
-        "23";
         maxspeed = 30;
-        "24";
         viz = 0;
-        "25";
         dt = .001;
-        "26";
         t = 0;
-        "27";
         tempsmax = 3.5;
-        "28";
         averageballmass = .45;
-        "29";
         bodytolegpercentage = 17.555["/"](100);
-        "30";
         averagelegmass = umass["*"](bodytolegpercentage);
-        "31";
         coeffofrestitution = .8;
-        "34";
         vixlist = RS_list_decorate([]);
-        "35";
         viylist = RS_list_decorate([]);
-        "36";
         count = 1;
-        "37";
         vix = count;
-        "38";
         while (vix["<="](maxspeed)) {
-            "39";
             viy = 2["*"](pow(vix, 2))["*"](height)["-"](g["*"](pow(distance, 2)))["/"](2["*"](vix)["*"](distance));
-            "40";
             if (pow(vix, 2)["+"](pow(viy, 2))["<="](pow(maxspeed, 2))) {
-                "41";
                 vixlist.append(vix);
-                "42";
                 viylist.append(viy);
             }
-            "43";
             vix=vix["+"](count);
         }
-        "46";
         ball = RS_interpolate_kwargs.call(this, sphere, [RS_desugar_kwargs({pos: vector(0, 0, 0), radius: .22, color: color.red, make_trail: true, trail_radius: .07, interval: 10})]);
-        "47";
         goal = RS_interpolate_kwargs.call(this, box, [RS_desugar_kwargs({pos: vector(distance["+"](.25), 1.05, 0), length: .5, height: 2.44, width: 7.32, color: color.white})]);
-        "48";
         field = RS_interpolate_kwargs.call(this, box, [RS_desugar_kwargs({pos: vector(distance["/"](2), ball.radius["-u"](), 0), length: distance, height: .1, width: 60, color: color.green})]);
-        "51";
         airtime = distance["/"](vixlist[vixlist.length["-"](1)]);
-        "52";
         angle = (await degrees(atan(viylist[viylist.length["-"](1)]["/"](vixlist[vixlist.length["-"](1)]))));
-        "53";
         launchvelocity = sqrt(pow(viylist[viylist.length["-"](1)], 2)["+"](pow(vixlist[vixlist.length["-"](1)], 2)));
-        "54";
         possibletrajectories = len(vixlist);
-        "55";
         accelball = launchvelocity["*"](100);
-        "56";
         kicknetforce = averageballmass["*"](accelball);
-        "57";
         kickmass = kicknetforce["/"](9.8);
-        "58";
         legvelocity = launchvelocity["*"](averagelegmass["+"](averageballmass))["/"](1["+"](coeffofrestitution)["*"](averagelegmass));
-        "59";
         kickpoint = angle["*"](ball.radius);
-        "98";
         if (len(vixlist)[">"](0)) {
-            "99";
             print("Nombre de trajectoires possibles : ", possibletrajectories, "\n");
-            "101";
             print("Informations sur la solution optimale : \n");
             print("{---------------------------------------}")
-            "102";
             print("Temps de vol : ", airtime, "secondes.");
-            "103";
             print("Angle de lancée : ", angle, "degres.");
-            "104";
             print("Vélocité initiale du ballon : ", launchvelocity, "m/s.");
-            "105";
             print("Force nécessaire pour effectuer la frappe : ", kicknetforce, "N");
-            "106";
             print("Au moment du contact avec le ballon, votre jambe doit voyager à une vitesse de : ", legvelocity, "m/s.");
-            "107";
             print("Vous ressentirez une masse de", kickmass, "kg sur votre pied au moment de contact avec le ballon.\nSuggestion d'entrainement musculaire : Lorsque vous vous entrainez les jambes essayez de vous rapprocher le plus possible le masse inscrite ci-dessus pour faciliter le tir.");
-            "108";
             print("Vous devriez frapper la balle aussi exactement que possible à", kickpoint, "cm en bas du milieu horizontal du ballon.");
             print("{---------------------------------------}\n\n")
         }
-        "113";
         ball.velocity = vector(vix, viy, viz);
-        "116";
         while (ball.pos.x["<="](distance["-"](ball.radius))) {
-            "117";
             (await rate(1e3));
-            "119";
             ball.pos.y = ball.pos.y["+"](ball.velocity.y["*"](dt));
-            "120";
             ball.pos.x = ball.pos.x["+"](ball.velocity.x["*"](dt));
-            "121";
             ball.pos.z = ball.pos.z["+"](ball.velocity.z["*"](dt));
-            "123";
             if (ball.pos.y["<"](ball.radius)) {
-                "124";
                 ball.velocity.y = abs(ball.velocity.y);
-                "125";
             } else {
-                "126";
                 ball.velocity.y = ball.velocity.y["+"](g["*"](dt));
-                "129";
             }
             if (ball.pos.x[">"](distance["-"](ball.radius)) || ball.pos.x["<"](0)) {
-                "130";
                 ball.velocity.x = 0;
-                "131";
                 ball.velocity.y = 0;
-                "132";
             } else {
-                "133";
                 ball.velocity.x = ball.velocity.x;
             }
         }
